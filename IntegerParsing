@@ -10,6 +10,9 @@ char tempChars[numChars];        // temporary array for use when parsing
 int integerFromPC1 = 0;
 int integerFromPC2 = 0;
 int integerFromPC3= 0;
+int storePC1 = 0;
+int storePC2 = 0;
+int storePC3 = 0;
 
 boolean newData = false;
 
@@ -46,7 +49,7 @@ void loop() {
         showParsedData();
         newData = false;
     }
-    writeServoAngle();
+    whatNeedsUpdate();
     
 }
 
@@ -92,12 +95,17 @@ void parseData() {      // split the data into its parts
 
     strtokIndx = strtok(tempChars,",");      // get the first part - the string
     integerFromPC1 = atoi(strtokIndx); // copy it to messageFromPC
+    
  
     strtokIndx = strtok(NULL, ","); // this continues where the previous call left off
     integerFromPC2 = atoi(strtokIndx);     // convert this part to an integer
-
+    
+    
     strtokIndx = strtok(NULL, ",");
     integerFromPC3 = atoi(strtokIndx);     // convert this part to a float
+
+
+
 
 }
 
@@ -112,9 +120,55 @@ void showParsedData() {
     Serial.println(integerFromPC3);
 }
 
-void writeServoAngle()
+void whatNeedsUpdate()
+{
+  if(storePC1 != integerFromPC1)
+  {
+    writeServoAngleR();
+    Serial.println("r needs update");
+  }
+  
+  if(storePC2 != integerFromPC2)
+  {
+    writeServoAngleE();
+    
+    Serial.println("e needs update");
+  }
+  
+  if(storePC3 != integerFromPC3)
+  {
+    writeServoAngleW();
+    
+    Serial.println("w needs update");
+  }
+}
+
+
+void writeServoAngleR()
 {
   rotateServo.write(integerFromPC1);
-  elbowServo.write(integerFromPC2);
-  wristServo.write(integerFromPC3);
+  storePC1 = integerFromPC1;
+ 
+    Serial.println("r updated");
 }
+
+void writeServoAngleE()
+{
+   elbowServo.write(integerFromPC2);
+   
+    Serial.println("e updated");
+   storePC2 = integerFromPC2;
+ 
+}
+
+void writeServoAngleW()
+{
+  wristServo.write(integerFromPC3);
+  
+  
+    Serial.println("w updated");
+  storePC3 = integerFromPC3;
+ 
+}
+
+  
