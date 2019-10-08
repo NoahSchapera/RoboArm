@@ -1,3 +1,38 @@
+#include <Servo.h>
+
+// Example 5 - Receive with start- and end-markers combined with parsing
+
+const byte numChars = 32;
+char receivedChars[numChars];
+char tempChars[numChars];        // temporary array for use when parsing
+
+      // variables to hold the parsed data
+int integerFromPC1 = 0;
+int integerFromPC2 = 0;
+int integerFromPC3= 0;
+
+boolean newData = false;
+
+Servo rotateServo;
+Servo elbowServo;
+Servo wristServo;
+
+//============
+
+void setup() {
+    Serial.begin(9600);
+    Serial.println("Expects values between 0-180");
+    Serial.println("Enter data in this style <int, int, int>  ");
+    Serial.println(); 
+    rotateServo.attach(9);
+    rotateServo.write(90);
+    elbowServo.attach(10);
+    elbowServo.write(90);
+    wristServo.attach(11);
+    wristServo.write(90);
+
+    
+}
 
 //============
 
@@ -11,6 +46,8 @@ void loop() {
         showParsedData();
         newData = false;
     }
+    writeServoAngle();
+    
 }
 
 //============
@@ -73,4 +110,11 @@ void showParsedData() {
     Serial.println(integerFromPC2);
     Serial.println("Int3");
     Serial.println(integerFromPC3);
+}
+
+void writeServoAngle()
+{
+  rotateServo.write(integerFromPC1);
+  elbowServo.write(integerFromPC2);
+  wristServo.write(integerFromPC3);
 }
